@@ -459,10 +459,16 @@ img {
   margin-bottom: 30px;
 }
 .review__main-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   width: 40vw;
 }
 .review__main-image {
-  width: 100%;
+  max-height: 70vh;
 }
 .review__previous-container {
   position: relative;
