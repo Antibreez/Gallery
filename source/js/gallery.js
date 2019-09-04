@@ -26,8 +26,9 @@
       localStorage.setItem('imagesData', JSON.stringify(imagesData));
       document.location.href = "review.html";
     }
+
+    gallery.removeEventListener('click', onImageClick);
   }
 
   gallery.addEventListener('click', onImageClick);
-
 })();
