@@ -33,9 +33,19 @@
 }
 
 .gallery__link {
-  display: block;
+  display: flex;
+  justify-content: center;
   width: 350px;
   height: 233px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.gallery__image {
+  align-self: center;
+  max-height: 100%;
 }
 
 .gallery__description {

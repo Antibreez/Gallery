@@ -404,9 +404,22 @@ img {
   }
 }
 .gallery__link {
-  display: block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   width: 350px;
   height: 233px;
+}
+.gallery__link:hover {
+  cursor: pointer;
+}
+.gallery__image {
+  -ms-flex-item-align: center;
+      align-self: center;
+  max-height: 100%;
 }
 .gallery__description {
   font-size: 17px;
