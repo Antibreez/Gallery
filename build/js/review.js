@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var container = document.querySelector('.review__container');
   var mainImage = document.querySelector('.review__main-image');
   var previousImage = document.querySelector('.review__previous-image');
   var nextImage = document.querySelector('.review__next-image');
@@ -8,23 +9,39 @@
   var closeButton = document.querySelector('.review__close');
 
   var imagesData = JSON.parse(localStorage.getItem('imagesData'));
-  var currentImage = +localStorage.getItem('currentImage');
+  var currentNum = +localStorage.getItem('currentImage');
+  var previousNum = currentNum - 1 < 0
+    ? imagesData.length - 1
+    : currentNum -1;
+  var nextNum = currentNum + 1 > imagesData.length - 1
+    ? 0
+    : currentNum + 1;
 
-  var getPreviousImageSrc = function (num) {
-    var previous = num - 1;
-    return previous > -1 ? imagesData[previous].src : '';
-  };
+  var decreaseValue = function (num) {
+    return num - 1 < 0 ? imagesData.length - 1 : num - 1;
+  }
 
-  var getNextImageSrc = function (num) {
-    var next = num + 1;
-    return next < imagesData.length ? imagesData[next].src : '';
-  };
+  var increaseValue = function (num) {
+    return num + 1 > imagesData.length - 1 ? 0 : num + 1;
+  }
 
-  var renderImages = function (mainNumber) {
-    mainImage.src = imagesData[mainNumber].src;
-    description.textContent = imagesData[mainNumber].description;
-    previousImage.src = getPreviousImageSrc(mainNumber);
-    nextImage.src = getNextImageSrc(mainNumber);
+  var getDecreasedValues = function () {
+    currentNum = decreaseValue(currentNum);
+    previousNum = decreaseValue(previousNum);
+    nextNum = decreaseValue(nextNum);
+  }
+
+  var getIncreasedValues = function () {
+    currentNum = increaseValue(currentNum);
+    previousNum = increaseValue(previousNum);
+    nextNum = increaseValue(nextNum);
+  }
+
+  var renderImages = function () {
+    mainImage.src = imagesData[currentNum].src;
+    description.textContent = imagesData[currentNum].description;
+    previousImage.src = imagesData[previousNum].src;
+    nextImage.src = imagesData[nextNum].src;
   }
 
   var resetImages = function () {
@@ -35,25 +52,30 @@
   }
 
   var onPreviousImageClick = function (evt) {
-    currentImage--;
-    renderImages(currentImage);
+    getDecreasedValues();
+    renderImages();
   }
 
   var onNextImageClick = function (evt) {
-    currentImage++;
-    renderImages(currentImage);
+    getIncreasedValues();
+    renderImages();
   }
 
   var onImageScroll = function (evt) {
-    if (evt.wheelDelta > 0 && currentImage < imagesData.length - 1) {
-      currentImage++;
-      renderImages(currentImage);
-    }
+    var delta = evt.detail ? evt.detail * (-1) : evt.wheelDelta;
 
-    if (evt.wheelDelta < 0 && currentImage > 0) {
-      currentImage--;
-      renderImages(currentImage);
-    }
+    delta < 0 ? getIncreasedValues() : getDecreasedValues();
+    renderImages();
+
+    // if (delta > 0 && currentNum < imagesData.length - 1) {
+    //   currentNum++;
+    //   renderImages(currentNum);
+    // }
+
+    // if (delta < 0 && currentNum > 0) {
+    //   currentNum--;
+    //   renderImages(currentNum);
+    // }
   }
 
   var onCloseClick = function (evt) {
@@ -65,20 +87,24 @@
     document.location.href = 'index.html';
   }
 
+  var mousewheleEvent = (/Firefox/i.test(navigator.userAgent))
+    ? 'DOMMouseScroll'
+    : 'mousewheel'
+
   var addEventListeners = function () {
     previousImage.addEventListener('click', onPreviousImageClick);
     nextImage.addEventListener('click', onNextImageClick);
     closeButton.addEventListener('click', onCloseClick);
-    document.addEventListener('mousewheel', onImageScroll);
+    container.addEventListener(mousewheleEvent, onImageScroll);
   }
 
   var removeEventListeners = function () {
     previousImage.removeEventListener('click', onPreviousImageClick);
     nextImage.removeEventListener('click', onNextImageClick);
     closeButton.removeEventListener('click', onCloseClick);
-    document.removeEventListener('mousewheel', onImageScroll);
+    container.removeEventListener(mousewheleEvent, onImageScroll);
   }
 
-  renderImages(currentImage);
+  renderImages();
   addEventListeners();
 })();
